@@ -1,0 +1,65 @@
+
+
+experiment:
+  name: "unet_resnet18_earlyfusion_v1"
+  seed: 42
+  output_dir: "runs"          
+
+
+data:
+  root: "D:/galaxeye_data"
+  train_split: "train"
+  val_split:   "val"
+  test_split:  "test"
+  pre_dir:    "pre-event"
+  post_dir:   "post-event"
+  target_dir: "target"
+
+  num_workers: 2          
+  pin_memory: true
+
+
+model:
+  arch: "Unet"             
+  encoder: "resnet18"      
+  encoder_weights: "imagenet"
+  in_channels: 4            
+  classes: 1                
+
+
+train:
+  epochs: 40
+  batch_size: 4            
+  patch_size: 256          
+  positive_oversample_p: 0.7  
+  amp: false                 
+  grad_clip: 1.0
+
+  optimizer:
+    type: "AdamW"
+    lr: 0.0001             
+    weight_decay: 0.0001
+
+  scheduler:
+    type: "cosine"          
+    warmup_epochs: 2
+    min_lr: 0.000001
+
+  loss:
+    bce_weight: 0.5
+    dice_weight: 0.5
+
+
+eval:
+  threshold: 0.5           
+  tile_size: 512            
+  tile_overlap: 64          
+  batch_size: 4             
+
+
+augment:
+  hflip_p: 0.5
+  vflip_p: 0.5
+  rot90_p: 0.5
+ 
+  eo_brightness_contrast_p: 0.3
